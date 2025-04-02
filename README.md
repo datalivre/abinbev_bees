@@ -9,7 +9,7 @@ Este documento descreve o processo de consumo, transformação e persistência d
 ### Ferramentas e Ambiente
 
 A solução foi implementada na nuvem da Microsoft (Azure) Free Trial, com os seguintes componentes principais
-- Databricks: Coding
+- Databricks: Coding.
 - Databricks Workflows: Orquestração do pipeline.
 - Delta Lake: Armazenamento com garantias ACID e integração ao Unity Catalog.
 - Autoloader: Ingestão eficiente de novos dados.
@@ -63,32 +63,32 @@ O projeto teve início com a criação de uma instância de Databricks diretamen
 
 ### Hierarquia de Dados no Unity Catalog
 O Databricks utiliza uma estrutura de namespace de três níveis no Unity Catalog: `catálogo.Esquema.Tabela`, sendo que:
-- Catálogo: Nível mais alto de organização - equivalente a um "data warehouse"
-- Esquema: Contêiner lógico para tabelas e views - equivalente a bancos de dados tradicionais
-- Tabelas/Views: Objetos de dados com esquema definido
+- Catálogo: Nível mais alto de organização - equivalente a um "data warehouse".
+- Esquema: Contêiner lógico para tabelas e views - equivalente a bancos de dados tradicionais.
+- Tabelas/Views: Objetos de dados com esquema definido.
 
 ### Estrutura do Unity Catalog
 Para organizar os dados conforme a arquitetura medalhão, foram definidos três esquemas dedicados dentro do catálogo principal:
 1. db_bronze_dev
 - **Comando**: `create database if not exists ws_bees_dev.db_bronze_dev;`
-- **Finalidade**: Persistência de dados brutos (ingestão inicial)
+- **Finalidade**: Persistência de dados brutos (ingestão inicial).
 - **Características**:
-  - Persistir dados brutos
-  - Não adiciona limpeza ou transformação nos dados
+  - Persistir dados brutos.
+  - Não adiciona limpeza ou transformação nos dados.
   
 2. db_silver_dev
 - **Comando**: `create database if not exists ws_bees_dev.db_silver_dev;`
 - **Finalidade**: Camada de limpeza e transformação
 - **Processos aplicados**:
-  - Tipagem de campos
-  - Particionamento
+  - Tipagem de campos.
+  - Particionamento.
 
 3. db_gold_dev
 - **Comando**: `create database if not exists ws_bees_dev.db_gold_dev;`
 - **Finalidade**: Camada analítica com regras de negócio
 - **Saída**:
-  - Regras ligadas ao negócio
-  - Dados prontos para consumo em BI e analytics
+  - Regras ligadas ao negócio.
+  - Dados prontos para consumo em BI e analytics.
  
 ### Estrutura de Armazenamento do Azure Data Lake
 De forma análoga, foram criados três contêineres dedicados na conta de armazenamento do Azure:
@@ -107,11 +107,11 @@ De forma análoga, foram criados três contêineres dedicados na conta de armaze
 ### Versionamento com GitHub
 ![image](https://github.com/user-attachments/assets/dccb584c-0d38-4a1c-9ab6-afff43c130c0)
 
-- **Autenticação**: Token de acesso pessoal com escopo Repos
+- **Autenticação**: Token de acesso pessoal com escopo _Repos_
 - **Fluxo**:
-  - Geração do token na interface do GitHub
-  - Configuração no Databricks Repos
-  - Sincronização automática de código
+  - Geração do token na interface do GitHub.
+  - Configuração no Databricks Repos.
+  - Sincronização automática de código.
 
 - **Vantagens**:
     ✔ Rastreabilidade de mudanças
@@ -156,10 +156,10 @@ Os nomes dos notebooks seguem um padrão claro que indica origem e destino dos d
 
 
 ## Implementação da Camada Bronze
-**Notebook**: `SRC_BZ_OPENBREWERY_API_INCREMENT`
-**Contexto**:
-- Primeira Tentativa: Uso do módulo openbrewery (sugerido pela API), que apresentou falhas críticas.
-- Solução Definitiva: Reconstrução do pipeline com o módulo requests do Python, garantindo confiabilidade e controle refinado.
+**Notebook**: ![`SRC_BZ_OPENBREWERY_API_INCREMENT`](https://github.com/datalivre/abinbev_bees/blob/fbd44ed570523afc6fc465f7558b811a478c9f68/DATA_ENGINEERING/OPENBREWERY/API/SRC_BZ_OPENBREWERY_API_INCREMENT.ipynb)
+- **Contexto**:
+  - Primeira Tentativa: Uso do módulo openbrewery (sugerido pela API), que apresentou falhas críticas.
+  - Solução Definitiva: Reconstrução do pipeline com o módulo requests do Python, garantindo confiabilidade e controle refinado.
 
 ### Objetivos do Pipeline
 
@@ -231,15 +231,15 @@ finally:
 ```
 ### Desafios e Soluções
 - Desafio: Latência na extração
-  - Solução: ThreadPoolExecutor com 10 workers
+  - Solução: ThreadPoolExecutor com 10 workers.
 - Desafio: Dados duplicados
-  - Solução: `.distinct()` e `left_anti join`
+  - Solução: `.distinct()` e `left_anti`.
 - Desafio: Evolução do schema da API
-  - Solução: `mergeSchema=True` para flexibilidade para mudanças
+  - Solução: `mergeSchema=True` para flexibilidade para mudanças.
  
 
 ## Implementação da Camada Silver
-**Notebook**: `BZ_SL_OPENBREWERY_API_INCREMENT`
+**Notebook**: ![`BZ_SL_OPENBREWERY_API_INCREMENT`](https://github.com/datalivre/abinbev_bees/blob/fbd44ed570523afc6fc465f7558b811a478c9f68/DATA_ENGINEERING/OPENBREWERY/API/BZ_SL_OPENBREWERY_API_INCREMENT.ipynb)
 
 ### Visão Geral
 Pipeline de streaming que transforma dados brutos (Bronze) em dados limpos e particionados (Silver), utilizando Delta Lake e Autoloader para processamento incremental.
@@ -286,14 +286,14 @@ query.awaitTermination()
 
 ### Desafios e Soluções
 - Desafio: Dados geográficos como string
-  - Solução: Conversão para DoubleType garantindo precisão
+  - Solução: Conversão para DoubleType garantindo precisão.
 - Desafio: Consultas lentas por país
-  - Solução: Particionamento por `country`
+  - Solução: Particionamento por `country`.
 - Desafio: Evolução do schema da API
-  - Solução: `mergeSchema=True` resiliente a mudanças
+  - Solução: `mergeSchema=True` resiliente a mudanças.
  
 ## Implementação da Camada Gold
-**Notebook**: SL_GD_OPENBREWERY_API_INCREMENT
+**Notebook**: ![SL_GD_OPENBREWERY_API_INCREMENT](https://github.com/datalivre/abinbev_bees/blob/fbd44ed570523afc6fc465f7558b811a478c9f68/DATA_ENGINEERING/OPENBREWERY/API/SL_GD_OPENBREWERY_API_INCREMENT.ipynb)
 ### Visão Geral
 Pipeline de streaming que consolida dados da camada Silver em métricas analíticas prontas para consumo, utilizando agregações estratégicas e otimizações para desempenho.
 ### Objetivos do Pipeline
@@ -351,9 +351,9 @@ _ = spark.sql('OPTIMIZE ' + gold_table)
 
 ### Desafios e Soluções
 - Desafio: Performance em consultas
-  - Solução: OPTIMIZE pós-carga
+  - Solução: OPTIMIZE pós-carga.
 - Desafio: Recuperação de falhas
-  - Solução: Checkpoint em storage externo
+  - Solução: Checkpoint em storage externo.
  
 ## Orquestração com Databricks Workflows
 **Job**: `wf_openbrewery_api`
@@ -380,9 +380,9 @@ Configuração do Workflow
 #### 3. Execução Sequencial
 - Sem concorrência entre tarefas, garantindo ordem correta e consistência dos dados.
 
-**Gerenciamento de Falhas**
 #### 4. Notificações Automáticas (4)
-- Canais suportados: E-mail, Microsoft Teams, Slack, etc.
+- Gerenciamento de Falhas:
+  - Canais suportados: E-mail, Microsoft Teams, Slack, etc.
 
 #### 5. Política de Tentativas (5)
 - Reexecução automática: Em caso de falha (ex.: timeout na API).
