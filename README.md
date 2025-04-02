@@ -488,3 +488,10 @@ GRANT SELECT ON TABLE db_gold_dev.tb_openbrewery_api TO `analytics-team`;
 - Tags: Classificação de dados (financeiro, confidencial).
 
 Com o Unity Catalog, a governança de dados torna-se centralizada, auditável e escalável.
+
+## Referencias:
+- https://datalivre.medium.com/joins-em-pyspark-3c1d2773eeb1
+- https://delta.io/
+- https://docs.databricks.com/aws/en/
+- https://learn.microsoft.com/pt-br/azure/databricks/
+- https://www.openbrewerydb.org/faq/
