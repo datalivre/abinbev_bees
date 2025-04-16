@@ -1,4 +1,4 @@
-# BEES Data Engineering - Breweries Case
+# Data Engineering - Breweries Case
 
 ## Visão Geral
 
