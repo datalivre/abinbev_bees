@@ -1,4 +1,4 @@
-# Data Engineering - Breweries Case
+# Data Engineering Case
 
 ## Visão Geral
 
